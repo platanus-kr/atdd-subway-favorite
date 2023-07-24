@@ -3,6 +3,8 @@ package subway.member.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.auth.principal.UserPrincipal;
+import subway.auth.userdetails.UserDetails;
 import subway.constant.SubwayMessage;
 import subway.exception.SubwayNotFoundException;
 import subway.member.application.dto.MemberRequest;
@@ -17,12 +19,18 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.to());
+        Member member = memberRepository.save(request.toInit());
         return MemberResponse.from(member);
     }
 
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new SubwayNotFoundException(SubwayMessage.MEMBER_NOT_FOUND));
+        return MemberResponse.from(member);
+    }
+
+    public MemberResponse findMember(UserPrincipal principal) {
+        Member member = memberRepository.findByEmail(principal.getUsername())
                 .orElseThrow(() -> new SubwayNotFoundException(SubwayMessage.MEMBER_NOT_FOUND));
         return MemberResponse.from(member);
     }
