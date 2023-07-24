@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("GitHubClient 관련 인수 테스트")
 public class GithubAcceptanceTest extends AcceptanceTest {
 
     /**
@@ -22,12 +23,14 @@ public class GithubAcceptanceTest extends AcceptanceTest {
      * When GitHub 인증을 하면
      * Then JWT 토큰을 반환한다.
      */
-    @DisplayName("Github Auth")
+    @DisplayName("code로 GitHub 인증을 할 수 있다")
     @Test
     void githubAuth() {
+        // given
         Map<String, String> params = new HashMap<>();
         params.put("code", GithubResponses.사용자1.getCode());
 
+        // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
@@ -35,6 +38,7 @@ public class GithubAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
 
+        // then
         assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }

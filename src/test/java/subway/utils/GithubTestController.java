@@ -30,6 +30,9 @@ public class GithubTestController {
         return ResponseEntity.ok().body(response);
     }
 
+    /**
+     * getGithubProfileFromGithub
+     */
     @GetMapping("/github/user")
     public ResponseEntity<GithubProfileResponse> user(@RequestHeader(value = "Authorization") String authorization) {
         String token = authorization.split(" ")[1];
